@@ -35,18 +35,19 @@ nuevosSilencios.txt: silencios.txt
 
 times/splits: nuevosSilencios.txt
 	-mkdir times
-	-split -d -a1 -l100 --additional-suffix=.txt "$^" "times/splits-"
+	-split -d -a3 -l10 --additional-suffix=.txt "$^" "times/splits-"
 
 times/Makefile: times/splits
 	@cp Makefile.1 $@
 	while read i a b;\
-	do if [ $$a = \'end\' ];\
+	do echo $$a;\
+		if [ $$a = 'end' ];\
 	  then echo '	                     >('$$(echo $${i%%.*}| sed "s/times/./")'.sh)'" 'end' " >>$@ ;\
 	  elif [[ $$a -eq 0 ]];\
 	  then echo 'Skip 0' ;\
 	  else echo '	                     >('$$(echo $${i%%.*}| sed "s/times/./")'.sh)'" $$(python -c 'print(round('$$a' * 24))') "\\ >>$@ ;\
 		fi;\
-	done <<( {head -q -n1 times/splits-*.txt; echo \'end\'} | paste <(echo 'DELETE';fd 'splits.*txt' times) - );
+	done <<( {head -q -n1 times/splits-*.txt; echo 'end'} | paste <(echo 'DELETE';fd --no-ignore-vcs 'splits.*txt' times) - );
 
 
 times/splits-%.sh: times/splits-%.txt
@@ -58,12 +59,12 @@ times/splits-%.sh: times/splits-%.txt
 	then i=1;\
 			 echo '	                     /dev/null'" $$(python -c 'print(round(('$$b' - '$$tini') * 24))') "\\ >>$@ ;\
 	else echo -n $$((i++))...;\
-	echo '	                     >(blind-to-video $(DRAFT) $${framerate} $(FFMPEG_ARGS) '"$*-$$((i-1))"'.mkv)'" $$(python -c 'print(round(('$$a' - '$$tini') * 24))') "\\ >>$@ ;\
+	echo '	                     >(waitstdin; blind-to-video $(DRAFT) $${framerate} $(FFMPEG_ARGS) '"$*-$$((i-1))"'.mkv)'" $$(python -c 'print(round(('$$a' - '$$tini') * 24))') "\\ >>$@ ;\
 	echo '	                     /dev/null'" $$(python -c 'print(round(('$$b' - '$$tini') * 24))') "\\ >>$@ ;\
 	fi;\
 	done <$^;\
 	echo -n $$((i++))...;\
-	echo '	                     >(blind-to-video $(DRAFT) $${framerate} $(FFMPEG_ARGS) '"$*-$$((i-1))"'.mkv)'" 'end' " >>$@ ;
+	echo '	                     >(waitstdin; blind-to-video $(DRAFT) $${framerate} $(FFMPEG_ARGS) '"$*-$$((i-1))"'.mkv)'" 'end' " >>$@ ;
 
 times/splitsh: 
 	for i in times/splits*.txt;\

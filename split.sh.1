@@ -2,4 +2,9 @@
 
 framerate=24
 
+# wait until stdin starts.
+waitstdin () {
+perl -e 'use IO::Select; $ready = IO::Select->new(STDIN)->can_read();'
+}
+
 blind-split -L \
