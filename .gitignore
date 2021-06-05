@@ -2,3 +2,8 @@
 *.mp4
 *.txt
 times/
+videos/
+renderDef/
+ffmpeg.sh
+lst.ffmpeg
+
