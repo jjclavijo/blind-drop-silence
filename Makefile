@@ -23,6 +23,7 @@ all: nuevosSilencios.txt
 	cd times;\
 		${MAKE} INPUT_VIDEO=../$(INPUT_VIDEO) all
 	${MAKE} aout/audios
+	${MAKE} videos/videos
 
 prepare: nuevosSilencios.txt
 	${MAKE} times/Makefile
@@ -107,12 +108,12 @@ aout/audios:
 	sox audio.mp3 aout/salida-$$(printf '%04d' $$i).mp3 trim $$mark
 	-rm aout/salida-0000.mp3
 
-ffmpeg.sh:
+ffmpeg.sh: | aout times
 	while read aud vid;\
 	do echo ffmpeg -i "$$vid" -i "$$aud" -c copy -map 0:v:0 -map 1:a:0 "$$(echo $$vid | sed 's/times/videos/')";\
-		done < <( paste <(fd --no-ignore-vcs '.*.mp3' aout | sort) <(fd --no-ignore-vcs '.*.mkv' times | sort)) > ffmpeg.sh
+		done < <( paste <(fd --no-ignore-vcs '.*.mp3' aout | sort) <(fd --no-ignore-vcs '.*.mkv' times | sort)) > $@
 	
-videos/videos:
+videos/videos: ffmpeg.sh
 	mkdir -p videos;
 	cat ffmpeg.sh | parallel
 
@@ -123,5 +124,9 @@ videos/videos:
 # file video/00....mkv
 # file video/00....mkv
 # ...
+
+lst.ffmpeg: videos/videos
+	fd '.*.mkv' videos | sed 's/^/file \"/;s/$$/\"/' > $@
+
 Definitivo.mp4: lst.ffmpeg
-  ffmpeg -f concat -i lst.ffmpeg -c copy Definitivo.mp4
+	ffmpeg -f concat -i lst.ffmpeg -c copy Definitivo.mp4

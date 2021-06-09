@@ -27,10 +27,24 @@ def purge_silencios(entrada,salida,fps,threshold):
     itt = iter(ar.copy())
 
     ar2 = []
-    for i in itt:
+
+    i = next(itt)
+    while True:
+
         while np.isnan(i[1]):
             i[1] = next(itt)[1]
-        ar2.append(i)
+
+        c = i #c for candidate
+
+        try: i = next(itt)
+        except StopIteration:
+            ar2.append(c)
+            break
+
+        if abs(i[0]-c[1]) < (3./fps):
+            i[0] = c[0]
+        else:
+            ar2.append(c)
 
     with open(salida,'w') as f:
         for i,j in ar2:
