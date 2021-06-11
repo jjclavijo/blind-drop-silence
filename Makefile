@@ -125,8 +125,11 @@ videos/videos: ffmpeg.sh
 # file video/00....mkv
 # ...
 
-lst.ffmpeg: videos/videos
-	fd '.*.mkv' videos | sed 's/^/file \"/;s/$$/\"/' > $@
+lst.ffmpeg: videos
+	fd '.*.mkv' videos | sed 's/^/file '\''/;s/$$/'\''/' > $@
 
 Definitivo.mp4: lst.ffmpeg
 	ffmpeg -f concat -i lst.ffmpeg -c copy Definitivo.mp4
+
+#lista.html -> lst.ffmpeg:
+# cat lista.html| sed -nE '/.mkv/ {s/<[^>]*>//g;s/^\s+/file '\''/;s/\s\(.*$/'\''/;p}' 
