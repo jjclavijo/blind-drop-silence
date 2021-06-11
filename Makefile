@@ -125,7 +125,7 @@ videos/videos: ffmpeg.sh
 # file video/00....mkv
 # ...
 
-lst.ffmpeg: videos/videos
+lst.ffmpeg: videos
 	fd '.*.mkv' videos | sed 's/^/file \"/;s/$$/\"/' > $@
 
 Definitivo.mp4: lst.ffmpeg
