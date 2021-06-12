@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VOLUMETHR=0.15
-VOLUMEDUR=0.3
+VOLUMETHR=0.12
+VOLUMEDUR=0.5
 
 mkfifo tmpfifo.dat
 
