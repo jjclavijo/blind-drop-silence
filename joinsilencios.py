@@ -28,7 +28,8 @@ def purge_silencios(entrada,salida,fps,threshold):
 
     ar2 = []
 
-    i = next(itt)
+    #i = next(itt)
+    i = np.array([0,0],dtype=float)
     while True:
 
         while np.isnan(i[1]):
