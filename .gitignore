@@ -6,4 +6,5 @@ videos/
 renderDef/
 ffmpeg.sh
 lst.ffmpeg
+list.files
 

@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/bin/zsh
 
-VOLUMETHR=0.05
-VOLUMEDUR=0.5
+VOLUMETHR=${VOLUMETHR:-0.05}
+VOLUMEDUR=${VOLUMEDUR:-0.5}
+
+echo Theshold $VOLUMETHR\; Duración $VOLUMEDUR
 
 mkfifo tmpfifo.dat
 

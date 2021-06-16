@@ -9,8 +9,8 @@ FPS=24
 @click.command()
 @click.argument('entrada')
 @click.argument('salida')
-@click.option('--fps',default=FPS,type=float)
-@click.option('--threshold',default=DESCARTTRH,type=int)
+@click.option('--fps',default=FPS,type=int)
+@click.option('--threshold',default=DESCARTTRH,type=float)
 def purge_silencios(entrada,salida,fps,threshold):
     with open(entrada,'r') as f:
         lineas = f.readlines()

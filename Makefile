@@ -2,6 +2,11 @@ SHELL=zsh
 
 INPUT_VIDEO = <please please please say which video to process>
 
+VOLUMETHR = 0.05
+VOLUMEDUR = 0.5
+DESCARTTHR = 0.3
+FPS = 24
+
 #DRAFT = -d
 DRAFT = 
 # useful for better performance when not working
@@ -36,7 +41,7 @@ silencios.txt: audio.mp3
 	./getSilencios.sh $^ $@
 
 nuevosSilencios.txt: silencios.txt
-	./joinsilencios.py $^ $@
+	./joinsilencios.py --fps ${FPS} --threshold ${DESCARTTHR} $^ $@
 
 .PHONY: times/splits
 
@@ -133,3 +138,13 @@ Definitivo.mp4: lst.ffmpeg
 
 #lista.html -> lst.ffmpeg:
 # cat lista.html| sed -nE '/.mkv/ {s/<[^>]*>//g;s/^\s+/file '\''/;s/\s\(.*$/'\''/;p}' 
+SHELL := /bin/zsh
+
+%+logo.mp4: %.mp4
+	ffmpeg -i $< -i logo-fi.png -filter_complex \
+	"overlay=W-w-5:5" \
+	-codec:a copy $@
+
+%+rapido.mp4: %.mp4
+	ffmpeg -i $< -vf 'setpts=0.8585828*PTS' -af 'atempo=1.16471'  $@
+
